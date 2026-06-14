@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Windows Programming Quiz — IT Dept, Borg Al Arab Technological University
+     Developer: J0HNTHAN (https://github.com/J0HNTHAN)
+     Theme: light-academic
+     Generated: June 2026
+     ============================================================ -->
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows Programming — Quiz App</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231e1e2e'/><polyline points='11,12 7,16 11,20' stroke='%2360a5fa' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/><polyline points='21,12 25,16 21,20' stroke='%2360a5fa' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='18' y1='10' x2='14' y2='22' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round'/></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & ROOT ===== */
+    :root {
+      --bg:            #f5f4f0;
+      --surface:       #ffffff;
+      --surface2:      #f0efe9;
+      --border:        #e0ddd5;
+      --text:          #1a1916;
+      --text2:         #5a5750;
+      --text3:         #9a9790;
+      --accent:        #2563eb;
+      --accent-bg:     #eff6ff;
+      --correct:       #166534;
+      --correct-bg:    #dcfce7;
+      --correct-border:#86efac;
+      --wrong:         #991b1b;
+      --wrong-bg:      #fee2e2;
+      --wrong-border:  #fca5a5;
+      --tag:           #374151;
+      --tag-bg:        #f3f4f6;
+      --radius:        10px;
+      --radius-lg:     14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 24px; position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between; height: 60px;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo        { font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+    .logo span   { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    /* Lang Pill */
+    .lang-pill { display: flex; gap: 3px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 3px; }
+    .lang-btn  { padding: 4px 11px; border-radius: 16px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: var(--text2); font-family: inherit; transition: all 0.15s; }
+    .lang-btn.active { background: var(--accent); color: #fff; }
+
+    /* Score chip */
+    .header-stats {
+      font-size: 13px; color: var(--text2); background: var(--surface2);
+      padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border);
+    }
+    .header-stats strong { color: var(--accent); font-weight: 600; }
+
+    /* GitHub badge */
+    .gh-badge {
+      display: flex; align-items: center; gap: 6px; padding: 5px 12px;
+      background: var(--tag-bg); border: 1px solid var(--border); border-radius: 20px;
+      font-size: 12px; font-weight: 500; color: var(--tag); text-decoration: none;
+      transition: all 0.15s;
+    }
+    .gh-badge:hover { background: var(--text); color: #fff; border-color: var(--text); }
+    .gh-badge svg   { flex-shrink: 0; }
+
+    /* ===== LAYOUT ===== */
+    .layout { display: flex; min-height: calc(100vh - 60px); }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 240px; flex-shrink: 0; background: var(--surface);
+      border-right: 1px solid var(--border); padding: 20px 0;
+      position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto;
+    }
+    .sidebar-title {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
+      text-transform: uppercase; color: var(--text3); padding: 0 16px 10px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 16px;
+      cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s;
+      font-size: 13.5px; color: var(--text2);
+    }
+    .nav-item:hover  { background: var(--surface2); color: var(--text); }
+    .nav-item.active { border-left-color: var(--accent); background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+    .nav-num { width: 22px; height: 22px; border-radius: 6px; background: var(--surface2); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; color: var(--text2); flex-shrink: 0; }
+    .nav-item.active .nav-num { background: var(--accent); color: #fff; }
+
+    /* ===== MAIN ===== */
+    .main { flex: 1; padding: 32px 40px; max-width: 860px; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .section-tag    { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: var(--accent); background: var(--accent-bg); padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+    .section-title  { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); margin-bottom: 6px; }
+    .section-desc   { font-size: 14px; color: var(--text2); }
+
+    /* ===== SCORE BAR ===== */
+    .score-bar { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; margin-bottom: 24px; }
+    .score-label { font-size: 13px; color: var(--text2); white-space: nowrap; }
+    .score-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+    .score-fill  { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; }
+    .score-val   { font-size: 14px; font-weight: 600; color: var(--text); min-width: 50px; text-align: right; }
+    .reset-btn   { font-size: 12px; color: var(--text2); background: var(--surface2); border: 1px solid var(--border); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .reset-btn:hover { background: var(--border); color: var(--text); }
+
+    /* ===== TYPE TABS ===== */
+    .type-tabs { display: flex; gap: 6px; margin-bottom: 24px; }
+    .type-tab  { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2); transition: all 0.15s; }
+    .type-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .type-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ===== MCQ QUESTION CARD ===== */
+    .questions-list { display: flex; flex-direction: column; gap: 20px; }
+    .q-card         { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: box-shadow 0.2s; }
+    .q-card:hover   { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .q-header       { display: flex; align-items: flex-start; gap: 12px; padding: 18px 20px 14px; }
+    .q-num          { width: 28px; height: 28px; border-radius: 8px; background: var(--surface2); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; color: var(--text2); flex-shrink: 0; margin-top: 1px; }
+    .q-text         { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.55; flex: 1; }
+    .qt-ar          { direction: rtl; text-align: right; font-weight: 600; }
+    .qt-en          { direction: ltr; text-align: left; font-size: 13.5px; color: var(--text2); margin-top: 4px; font-weight: 400; }
+
+    /* 2-column options */
+    .q-options { padding: 0 20px 18px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .q-opt     { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface2); cursor: pointer; transition: all 0.15s; font-size: 14px; }
+    .q-opt:hover:not(.answered) { border-color: var(--accent); background: var(--accent-bg); }
+    .opt-letter { font-size: 12px; font-weight: 600; color: var(--text2); width: 18px; flex-shrink: 0; padding-top: 1px; }
+    .opt-text   { flex: 1; line-height: 1.4; }
+    .q-opt.answered       { cursor: default; }
+    .q-opt.correct        { border-color: var(--correct-border); background: var(--correct-bg); color: var(--correct); }
+    .q-opt.wrong          { border-color: var(--wrong-border);   background: var(--wrong-bg);   color: var(--wrong); }
+    .q-opt.show-correct   { border-color: var(--correct-border); background: var(--correct-bg); color: var(--correct); }
+
+    /* ===== EXPLANATION CARD ===== */
+    .q-explanation {
+      margin: 0 20px 18px;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      display: none;
+      border-left: 4px solid transparent;
+      animation: fadeSlideIn 0.25s ease;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .q-explanation.show         { display: block; }
+    .q-explanation.exp-correct  { background: var(--correct-bg); border-color: var(--correct-border); }
+    .q-explanation.exp-wrong    { background: var(--wrong-bg);   border-color: var(--wrong-border); }
+    .exp-result-label { font-weight: 700; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .exp-correct .exp-result-label { color: var(--correct); }
+    .exp-wrong   .exp-result-label { color: var(--wrong); }
+    .exp-text { color: var(--text); font-weight: 400; }
+    .exp-text-ar { direction: rtl; text-align: right; }
+    .exp-text-en { direction: ltr; text-align: left; font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+    /* ===== WRITTEN CARD ===== */
+    .written-card   { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .written-header { display: flex; align-items: flex-start; gap: 12px; padding: 18px 20px 14px; }
+    .written-body   { padding: 0 20px 20px; }
+    .reveal-btn { font-size: 13px; font-weight: 500; color: var(--accent); background: var(--accent-bg); border: 1px solid #bfdbfe; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .reveal-btn:hover { background: #dbeafe; }
+    .written-reveal { display: none; margin-top: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+    .written-reveal.show { display: block; }
+    .answer-label   { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+    .answer-content { font-size: 14px; color: var(--text); line-height: 1.65; white-space: pre-wrap; }
+    .answer-content-ar { direction: rtl; text-align: right; }
+    .answer-content-en { direction: ltr; font-family: 'DM Mono', monospace; }
+
+    /* ===== OVERVIEW CARD ===== */
+    .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
+    .ov-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; cursor: pointer; transition: all 0.2s; }
+    .ov-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(37,99,235,0.1); }
+    .ov-num  { font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ov-title{ font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ov-meta { font-size: 12px; color: var(--text3); }
+
+    /* ===== UTILITY ===== */
+    .hidden { display: none !important; }
+
+    /* ===== HAMBURGER BUTTON ===== */
+    .hamburger {
+      display: none; flex-direction: column; justify-content: center; gap: 5px;
+      width: 36px; height: 36px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; padding: 8px 7px; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .hamburger:hover { background: var(--border); }
+    .hamburger span {
+      display: block; height: 2px; background: var(--text); border-radius: 2px;
+      transition: all 0.25s ease;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ===== SIDEBAR OVERLAY (mobile) ===== */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+      z-index: 200; backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.show { display: block; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .sidebar {
+        position: fixed; top: 60px; left: 0; bottom: 0;
+        z-index: 210; transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+        height: calc(100vh - 60px);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main    { padding: 20px 16px; }
+      .q-options { grid-template-columns: 1fr; }
+      .header-right { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="header-left">
+    <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="logo">IT Dept <span>Windows Programming</span></div>
+  </div>
+  <div class="header-right">
+    <div class="lang-pill">
+      <button class="lang-btn" onclick="setLang('ar',event)">عربي</button>
+      <button class="lang-btn active" onclick="setLang('en',event)">EN</button>
+      <button class="lang-btn" onclick="setLang('both',event)">AR+EN</button>
+    </div>
+    <div class="header-stats">
+      Score: <strong id="global-score">0</strong> / <span id="global-total">0</span>
+    </div>
+    <a href="https://github.com/J0HNTHAN" target="_blank" class="gh-badge" title="J0HNTHAN on GitHub">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      J0HNTHAN
+    </a>
+  </div>
+</header>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ===== LAYOUT ===== -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-title">Tutorials</div>
+    <div class="nav-item active" onclick="showPage('overview',this)">
+      <div class="nav-num">★</div> Overview
+    </div>
+    <div class="nav-item" onclick="showPage('t1',this)">
+      <div class="nav-num">1</div> HTTP, API & JSON
+    </div>
+    <div class="nav-item" onclick="showPage('t2',this)">
+      <div class="nav-num">2</div> MVC Architecture
+    </div>
+    <div class="nav-item" onclick="showPage('t3',this)">
+      <div class="nav-num">3</div> DB Context & Models
+    </div>
+    <div class="nav-item" onclick="showPage('t4',this)">
+      <div class="nav-num">4</div> ViewBag & ViewData
+    </div>
+    <div class="nav-item" onclick="showPage('t5',this)">
+      <div class="nav-num">5</div> Model Binding
+    </div>
+    <div class="nav-item" onclick="showPage('t6',this)">
+      <div class="nav-num">6</div> CRUD Operations
+    </div>
+    <div class="nav-item" onclick="showPage('t7',this)">
+      <div class="nav-num">7</div> HTML Helpers
+    </div>
+    <div class="nav-item" onclick="showPage('t8',this)">
+      <div class="nav-num">8</div> Forms & Validation
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- ===== OVERVIEW PAGE ===== -->
+    <div class="page active" id="page-overview">
+      <div class="section-header">
+        <div class="section-tag">Course</div>
+        <div class="section-title">Windows Programming</div>
+        <div class="section-desc">Information Technology Department — 4th Year &nbsp;|&nbsp; Dr. Radwa Rady &nbsp;|&nbsp; 2nd Term 2025/2026</div>
+      </div>
+      <p style="color:var(--text2);font-size:14px;margin-bottom:20px;">Select a tutorial from the sidebar to start practicing. Each tutorial contains MCQ and written questions with full answer explanations.</p>
+      <div class="overview-grid">
+        <div class="ov-card" onclick="showPage('t1',null)">
+          <div class="ov-num">Tutorial 1</div>
+          <div class="ov-title">HTTP, API & JSON</div>
+          <div class="ov-meta">5 MCQ · 5 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t2',null)">
+          <div class="ov-num">Tutorial 2</div>
+          <div class="ov-title">MVC Architecture</div>
+          <div class="ov-meta">5 MCQ · 5 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t3',null)">
+          <div class="ov-num">Tutorial 3</div>
+          <div class="ov-title">DB Context & Models</div>
+          <div class="ov-meta">4 MCQ · 5 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t4',null)">
+          <div class="ov-num">Tutorial 4</div>
+          <div class="ov-title">ViewBag & ViewData</div>
+          <div class="ov-meta">3 MCQ · 5 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t5',null)">
+          <div class="ov-num">Tutorial 5</div>
+          <div class="ov-title">Model Binding</div>
+          <div class="ov-meta">5 MCQ · 5 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t6',null)">
+          <div class="ov-num">Tutorial 6</div>
+          <div class="ov-title">CRUD Operations</div>
+          <div class="ov-meta">4 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t7',null)">
+          <div class="ov-num">Tutorial 7</div>
+          <div class="ov-title">HTML Helpers</div>
+          <div class="ov-meta">4 Complete · 2 Written</div>
+        </div>
+        <div class="ov-card" onclick="showPage('t8',null)">
+          <div class="ov-num">Tutorial 8</div>
+          <div class="ov-title">Forms & Validation</div>
+          <div class="ov-meta">4 Written</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TUTORIAL 1 ===== -->
+    <div class="page" id="page-t1">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 1</div>
+        <div class="section-title">HTTP, API &amp; JSON</div>
+        <div class="section-desc">Fundamentals of web communication — HTTP protocol, ASP.NET Core, APIs, status codes, and JSON.</div>
+      </div>
+      <div class="score-bar">
+        <span class="score-label">Progress</span>
+        <div class="score-track"><div class="score-fill" id="fill-t1" style="width:0%"></div></div>
+        <span class="score-val" id="val-t1">0 / 5</span>
+        <button class="reset-btn" onclick="resetSection('t1')">Reset</button>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="switchTab(this,'t1','mcq')">MCQ (5)</button>
+        <button class="type-tab" onclick="switchTab(this,'t1','written')">Written (5)</button>
+      </div>
+
+      <!-- MCQ -->
+      <div id="t1-mcq" class="questions-list"></div>
+
+      <!-- Written -->
+      <div id="t1-written" class="questions-list hidden"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 2 ===== -->
+    <div class="page" id="page-t2">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 2</div>
+        <div class="section-title">MVC Architecture</div>
+        <div class="section-desc">Model-View-Controller pattern, static vs dynamic pages, Razor engine, and routing.</div>
+      </div>
+      <div class="score-bar">
+        <span class="score-label">Progress</span>
+        <div class="score-track"><div class="score-fill" id="fill-t2" style="width:0%"></div></div>
+        <span class="score-val" id="val-t2">0 / 5</span>
+        <button class="reset-btn" onclick="resetSection('t2')">Reset</button>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="switchTab(this,'t2','mcq')">MCQ (5)</button>
+        <button class="type-tab" onclick="switchTab(this,'t2','written')">Written (5)</button>
+      </div>
+      <div id="t2-mcq" class="questions-list"></div>
+      <div id="t2-written" class="questions-list hidden"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 3 ===== -->
+    <div class="page" id="page-t3">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 3</div>
+        <div class="section-title">DB Context &amp; Models</div>
+        <div class="section-desc">Database First vs Code First, DB context class, Model vs @model, entity keys.</div>
+      </div>
+      <div class="score-bar">
+        <span class="score-label">Progress</span>
+        <div class="score-track"><div class="score-fill" id="fill-t3" style="width:0%"></div></div>
+        <span class="score-val" id="val-t3">0 / 4</span>
+        <button class="reset-btn" onclick="resetSection('t3')">Reset</button>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="switchTab(this,'t3','mcq')">MCQ (4)</button>
+        <button class="type-tab" onclick="switchTab(this,'t3','written')">Written (5)</button>
+      </div>
+      <div id="t3-mcq" class="questions-list"></div>
+      <div id="t3-written" class="questions-list hidden"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 4 ===== -->
+    <div class="page" id="page-t4">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 4</div>
+        <div class="section-title">ViewBag &amp; ViewData</div>
+        <div class="section-desc">Sending data to views — ViewBag, ViewData, ViewImports, and the Department/Index scenario.</div>
+      </div>
+      <div class="score-bar">
+        <span class="score-label">Progress</span>
+        <div class="score-track"><div class="score-fill" id="fill-t4" style="width:0%"></div></div>
+        <span class="score-val" id="val-t4">0 / 3</span>
+        <button class="reset-btn" onclick="resetSection('t4')">Reset</button>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="switchTab(this,'t4','mcq')">MCQ (3)</button>
+        <button class="type-tab" onclick="switchTab(this,'t4','written')">Written (5)</button>
+      </div>
+      <div id="t4-mcq" class="questions-list"></div>
+      <div id="t4-written" class="questions-list hidden"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 5 ===== -->
+    <div class="page" id="page-t5">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 5</div>
+        <div class="section-title">Model Binding</div>
+        <div class="section-desc">Types of binding, query string segments, GET vs POST forms, and TModel.</div>
+      </div>
+      <div class="score-bar">
+        <span class="score-label">Progress</span>
+        <div class="score-track"><div class="score-fill" id="fill-t5" style="width:0%"></div></div>
+        <span class="score-val" id="val-t5">0 / 5</span>
+        <button class="reset-btn" onclick="resetSection('t5')">Reset</button>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="switchTab(this,'t5','mcq')">MCQ (5)</button>
+        <button class="type-tab" onclick="switchTab(this,'t5','written')">Written (5)</button>
+      </div>
+      <div id="t5-mcq" class="questions-list"></div>
+      <div id="t5-written" class="questions-list hidden"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 6 ===== -->
+    <div class="page" id="page-t6">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 6</div>
+        <div class="section-title">CRUD Operations</div>
+        <div class="section-desc">GET/POST requests, Edit view, Index view, and steps for editing employee data.</div>
+      </div>
+      <div id="t6-written" class="questions-list"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 7 ===== -->
+    <div class="page" id="page-t7">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 7</div>
+        <div class="section-title">HTML Helpers</div>
+        <div class="section-desc">Loosely typed helpers, strong type helpers, TModel, and tag types for POST forms.</div>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab active" onclick="switchTab(this,'t7','complete')">Complete (4)</button>
+        <button class="type-tab" onclick="switchTab(this,'t7','written')">Written (2)</button>
+      </div>
+      <div id="t7-complete" class="questions-list"></div>
+      <div id="t7-written" class="questions-list hidden"></div>
+    </div>
+
+    <!-- ===== TUTORIAL 8 ===== -->
+    <div class="page" id="page-t8">
+      <div class="section-header">
+        <div class="section-tag">Tutorial 8</div>
+        <div class="section-title">Forms &amp; Validation</div>
+        <div class="section-desc">ImageURL types, data validation, RedirectToAction, and dropdown SelectList.</div>
+      </div>
+      <div id="t8-written" class="questions-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let currentLang = 'en';
+let scores = {};
+let totals = {};
+
+// ============================================================
+// DATA
+// ============================================================
+const data = {
+  t1: {
+    mcq: [
+      {
+        q_en: "What is HTTP?",
+        q_ar: "ما هو HTTP؟",
+        opts_en: ["Hypertext Transfer Protocol","Hypertext Transmission Protocol","Hyper Transfer Text Protocol","Hypertext Transport Protocol"],
+        opts_ar: ["بروتوكول نقل النص التشعبي","بروتوكول إرسال النص التشعبي","بروتوكول نقل النص المتشعب","بروتوكول نقل النصوص التشعبية"],
+        correct: 0,
+        ex_en: "HTTP stands for Hypertext Transfer Protocol — it is the foundation of data communication on the World Wide Web.",
+        ex_ar: "HTTP اختصار لـ Hypertext Transfer Protocol وهو البروتوكول الأساسي لنقل البيانات على الإنترنت."
+      },
+      {
+        q_en: "What is ASP.NET Core?",
+        q_ar: "ما هو ASP.NET Core؟",
+        opts_en: ["A web framework","A programming language","A database system","A cloud service"],
+        opts_ar: ["إطار عمل ويب","لغة برمجة","نظام قواعد بيانات","خدمة سحابية"],
+        correct: 0,
+        ex_en: "ASP.NET Core is a cross-platform web framework developed by Microsoft for building modern web applications.",
+        ex_ar: "ASP.NET Core هو إطار عمل ويب متعدد المنصات طورته Microsoft لبناء تطبيقات الويب الحديثة."
+      },
+      {
+        q_en: "What is API?",
+        q_ar: "ما هو API؟",
+        opts_en: ["Application Programming Interface","Application Program Interface","Application Protocol Interface","Application Programming Integration"],
+        opts_ar: ["واجهة برمجة التطبيقات","واجهة برنامج التطبيقات","واجهة بروتوكول التطبيقات","تكامل برمجة التطبيقات"],
+        correct: 0,
+        ex_en: "API stands for Application Programming Interface — a set of rules that allows different software systems to communicate with each other.",
+        ex_ar: "API اختصار لـ Application Programming Interface وهي مجموعة قواعد تسمح لأنظمة البرمجيات المختلفة بالتواصل مع بعضها."
+      },
+      {
+        q_en: "What are the most common HTTP status codes?",
+        q_ar: "ما هي أكثر رموز HTTP الشائعة؟",
+        opts_en: ["200, 404, 500","100, 200, 300","400, 500, 600","200, 300, 400"],
+        opts_ar: ["200، 404، 500","100، 200، 300","400، 500، 600","200، 300، 400"],
+        correct: 0,
+        ex_en: "200 (OK) = success, 404 (Not Found) = resource missing, 500 (Internal Server Error) = server-side problem.",
+        ex_ar: "200 = نجاح، 404 = المورد غير موجود، 500 = خطأ في الخادم."
+      },
+      {
+        q_en: "What is JSON?",
+        q_ar: "ما هو JSON؟",
+        opts_en: ["JavaScript Object Notation","JavaScript Online Notation","JavaScript Object Network","JavaScript Object Name"],
+        opts_ar: ["ترميز كائنات JavaScript","ترميز JavaScript الإلكتروني","شبكة كائنات JavaScript","اسم كائن JavaScript"],
+        correct: 0,
+        ex_en: "JSON (JavaScript Object Notation) is a lightweight data-interchange format, easy for humans to read and for machines to parse.",
+        ex_ar: "JSON هو تنسيق خفيف لتبادل البيانات يسهل قراءته للبشر وتحليله للآلات."
+      }
+    ],
+    written: [
+      {
+        q_en: "What is HTTP and why is it important in web communication?",
+        q_ar: "ما هو HTTP ولماذا هو مهم في التواصل عبر الويب؟",
+        ans_en: "HTTP stands for Hypertext Transfer Protocol. It is a protocol used for transmitting hypertext via the Internet, allowing web browsers and servers to communicate. HTTP is essential for loading web pages and transferring data over the web.",
+        ans_ar: "HTTP هو بروتوكول نقل النص التشعبي المستخدم لنقل البيانات عبر الإنترنت، يتيح التواصل بين المتصفح والخادم وهو أساسي لتحميل صفحات الويب."
+      },
+      {
+        q_en: "What is ASP.NET Core and what are its main features?",
+        q_ar: "ما هو ASP.NET Core وما هي ميزاته الرئيسية؟",
+        ans_en: "ASP.NET Core is a web framework developed by Microsoft for building modern web applications. Its main features include: cross-platform support, high performance, the ability to build cloud-based applications, dependency injection, and a modular design allowing developers to include only necessary components.",
+        ans_ar: "إطار عمل ويب من Microsoft. ميزاته: دعم متعدد المنصات، أداء عالٍ، بناء تطبيقات سحابية، حقن التبعيات، وتصميم معياري."
+      },
+      {
+        q_en: "Explain what an API is and its significance in software development.",
+        q_ar: "اشرح ما هو API وأهميته في تطوير البرمجيات.",
+        ans_en: "An API (Application Programming Interface) is a set of rules and protocols for building and interacting with software applications. It allows different software systems to communicate, enabling developers to integrate various services and functionalities — enhancing productivity and innovation.",
+        ans_ar: "API هو مجموعة قواعد وبروتوكولات تتيح التواصل بين الأنظمة المختلفة وتمكن المطورين من دمج الخدمات، مما يعزز الإنتاجية والابتكار."
+      },
+      {
+        q_en: "What are the most common HTTP status codes and what do they indicate?",
+        q_ar: "ما هي أكثر رموز HTTP شيوعاً وماذا تعني؟",
+        ans_en: "200 (OK) — request was successful. 404 (Not Found) — requested resource could not be found. 500 (Internal Server Error) — a server error occurred while processing the request. These codes help clients understand the result of their requests.",
+        ans_ar: "200 (OK) — نجاح الطلب. 404 (Not Found) — المورد غير موجود. 500 (Internal Server Error) — خطأ في الخادم. تساعد هذه الرموز العميل على فهم نتيجة طلبه."
+      },
+      {
+        q_en: "Define JSON and its role in data interchange between web applications.",
+        q_ar: "عرّف JSON ودوره في تبادل البيانات بين تطبيقات الويب.",
+        ans_en: "JSON (JavaScript Object Notation) is a lightweight data interchange format that is easy for humans to read/write and easy for machines to parse/generate. It is commonly used in web applications to transmit data between server and client, making it popular for APIs and web services.",
+        ans_ar: "JSON هو تنسيق خفيف لتبادل البيانات، سهل للقراءة والكتابة للبشر وسهل التحليل للآلات. يُستخدم بشكل شائع لنقل البيانات بين الخادم والعميل."
+      }
+    ]
+  },
+  t2: {
+    mcq: [
+      {
+        q_en: "What does MVC stand for in the context of web applications?",
+        q_ar: "ماذا يعني اختصار MVC في سياق تطبيقات الويب؟",
+        opts_en: ["Model View Controller","Multiple View Controller","Model Variable Controller","Main View Controller"],
+        opts_ar: ["النموذج والعرض والمتحكم","متحكم العرض المتعدد","متحكم المتغير والنموذج","متحكم العرض الرئيسي"],
+        correct: 0,
+        ex_en: "MVC = Model (data & logic) + View (UI/presentation) + Controller (handles requests, connects Model and View).",
+        ex_ar: "MVC = Model (البيانات والمنطق) + View (واجهة المستخدم) + Controller (يعالج الطلبات ويربط النموذج بالعرض)."
+      },
+      {
+        q_en: "What is one of the advantages of using MVC?",
+        q_ar: "ما هي إحدى مزايا استخدام MVC؟",
+        opts_en: ["Tight Coupling","Separation of Concerns","Single Layer Architecture","Static Pages Only"],
+        opts_ar: ["اقتران صارم","فصل المخاوف","معمارية أحادية الطبقة","الصفحات الثابتة فقط"],
+        correct: 1,
+        ex_en: "Separation of Concerns means each MVC layer has a distinct responsibility, making code easier to maintain and test.",
+        ex_ar: "فصل المخاوف يعني أن كل طبقة في MVC لها مسؤولية محددة، مما يجعل الكود أسهل في الصيانة والاختبار."
+      },
+      {
+        q_en: "Which of the following is NOT a layer in MVC architecture?",
+        q_ar: "أيٌّ مما يلي ليس طبقة في معمارية MVC؟",
+        opts_en: ["Model","View","Controller","Database"],
+        opts_ar: ["النموذج","العرض","المتحكم","قاعدة البيانات"],
+        correct: 3,
+        ex_en: "Database is not a layer of MVC. The three layers are: Model, View, and Controller. The database is accessed through the Model layer.",
+        ex_ar: "قاعدة البيانات ليست طبقة في MVC. الطبقات الثلاث هي: Model وView وController. يتم الوصول لقاعدة البيانات عبر طبقة Model."
+      },
+      {
+        q_en: "What type of pages are created using HTML and CSS?",
+        q_ar: "ما نوع الصفحات التي تُنشأ باستخدام HTML وCSS؟",
+        opts_en: ["Static Pages","Dynamic Pages","Active Server Pages","All of the above"],
+        opts_ar: ["صفحات ثابتة","صفحات ديناميكية","صفحات خادم نشطة","كل ما سبق"],
+        correct: 3,
+        ex_en: "HTML and CSS primarily create Static Pages (content doesn't change without manual update). The answer 'All of the above' is the PDF's stated correct answer.",
+        ex_ar: "HTML وCSS تنشئ بشكل أساسي صفحات ثابتة. الإجابة 'كل ما سبق' هي الإجابة الصحيحة وفقاً للكتاب."
+      },
+      {
+        q_en: "What is the role of the Controller in MVC?",
+        q_ar: "ما دور المتحكم (Controller) في MVC؟",
+        opts_en: ["To store data","To catch requests and send data to view","To create HTML pages","To manage the database"],
+        opts_ar: ["تخزين البيانات","استقبال الطلبات وإرسال البيانات للعرض","إنشاء صفحات HTML","إدارة قاعدة البيانات"],
+        correct: 1,
+        ex_en: "The Controller acts as intermediary: it catches requests from the user, retrieves data from the Model, and passes it to the View for presentation.",
+        ex_ar: "المتحكم وسيط: يستقبل الطلبات، يسترجع البيانات من النموذج، ويمررها للعرض."
+      }
+    ],
+    written: [
+      {
+        q_en: "What are the main components of the MVC architecture and their roles?",
+        q_ar: "ما هي المكونات الرئيسية لمعمارية MVC وأدوارها؟",
+        ans_en: "Model: represents data and business logic, maps database tables. View: displays data to user via HTML. Controller: intermediary — catches requests, retrieves from Model, sends to View.",
+        ans_ar: "Model: يمثل البيانات والمنطق، يعكس جداول DB. View: يعرض البيانات للمستخدم. Controller: وسيط يستقبل الطلبات ويربط النموذج بالعرض."
+      },
+      {
+        q_en: "What are the differences between static pages, dynamic pages, and active server pages?",
+        q_ar: "ما الفرق بين الصفحات الثابتة والديناميكية وصفحات الخادم النشطة؟",
+        ans_en: "Static Pages: HTML/CSS only, don't change unless manually updated. Dynamic Pages: use HTML+CSS+JavaScript, content changes based on user interaction. Active Server Pages (ASP): server-side technology that executes scripts before sending HTML to client.",
+        ans_ar: "ثابتة: HTML/CSS فقط، لا تتغير. ديناميكية: HTML+CSS+JS، تتغير بناءً على تفاعل المستخدم. ASP: تنفذ scripts على الخادم قبل إرسال HTML."
+      },
+      {
+        q_en: "What are the advantages of using web applications over desktop applications?",
+        q_ar: "ما مزايا تطبيقات الويب مقارنة بتطبيقات سطح المكتب؟",
+        ans_en: "Web apps receive continuous updates without user intervention, can be accessed from any device with internet, and don't require installation. Challenge: need a highly stable server. This can be mitigated using reliable hosting services.",
+        ans_ar: "تطبيقات الويب تحصل على تحديثات مستمرة، يمكن الوصول إليها من أي جهاز، ولا تحتاج تثبيت. التحدي: الحاجة لخادم مستقر."
+      },
+      {
+        q_en: "Explain the role of the Razor engine in MVC applications.",
+        q_ar: "اشرح دور محرك Razor في تطبيقات MVC.",
+        ans_en: "Razor engine allows developers to write C# code directly within View files (.cshtml). This server-side code is processed on the server and converted into HTML before being sent to the client, enabling dynamic content generation.",
+        ans_ar: "محرك Razor يتيح كتابة كود C# مباشرة داخل ملفات العرض. يُعالَج هذا الكود على الخادم ويُحوَّل إلى HTML قبل إرساله للعميل."
+      },
+      {
+        q_en: "What is the significance of the routing map in MVC architecture?",
+        q_ar: "ما أهمية خريطة التوجيه في معمارية MVC؟",
+        ans_en: "The routing map defines how incoming requests are directed to the appropriate Controller and action method. For example, 'Emp/Index' → Emp controller → Index method. This maintains a clean URL structure.",
+        ans_ar: "خريطة التوجيه تحدد كيفية توجيه الطلبات للمتحكم والإجراء المناسب. مثلاً: 'Emp/Index' → متحكم Emp → إجراء Index."
+      }
+    ]
+  },
+  t3: {
+    mcq: [
+      {
+        q_en: "What is the purpose of creating a DB context class?",
+        q_ar: "ما الغرض من إنشاء كلاس DB Context؟",
+        opts_en: ["To create a DB table for each class","To connect VB to the DB","To install SQL server tools","To generate classes first"],
+        opts_ar: ["إنشاء جدول DB لكل كلاس","توصيل VB بقاعدة البيانات","تثبيت أدوات SQL Server","توليد الكلاسات أولاً"],
+        correct: 0,
+        ex_en: "DB Context class creates a database table for each class, allowing management of data and interactions with the database via Entity Framework.",
+        ex_ar: "كلاس DB Context يُنشئ جدول قاعدة بيانات لكل كلاس، ويتيح إدارة البيانات والتفاعل مع قاعدة البيانات عبر Entity Framework."
+      },
+      {
+        q_en: "What is the difference between Model and @model?",
+        q_ar: "ما الفرق بين Model و@model؟",
+        opts_en: ["Model is a view property that contains dynamic data","@model is a view property that contains dynamic data","Both are the same","Model is static while @model is dynamic"],
+        opts_ar: ["Model خاصية عرض تحتوي على بيانات ديناميكية","@model خاصية عرض تحتوي على بيانات ديناميكية","كلاهما متشابهان","Model ثابت بينما @model ديناميكي"],
+        correct: 0,
+        ex_en: "Model is the view property containing dynamic data sent from backend. @model is the Razor syntax used to define the type of model in a Razor view file.",
+        ex_ar: "Model هو خاصية العرض التي تحتوي البيانات الديناميكية من الخلفية. @model هو صياغة Razor لتحديد نوع النموذج في ملف العرض."
+      },
+      {
+        q_en: "What are the two methods of working with databases in ASP.NET Core?",
+        q_ar: "ما هما طريقتا العمل مع قواعد البيانات في ASP.NET Core؟",
+        opts_en: ["Database First and Code First","SQL First and Code First","Entity Framework and ADO .NET","Model First and View First"],
+        opts_ar: ["Database First و Code First","SQL First و Code First","Entity Framework و ADO.NET","Model First و View First"],
+        correct: 0,
+        ex_en: "Database First: generate the DB in SQL then write code to interact. Code First: create classes first then migrate them to the database.",
+        ex_ar: "Database First: إنشاء DB في SQL أولاً ثم كتابة الكود. Code First: إنشاء الكلاسات أولاً ثم ترحيلها لقاعدة البيانات."
+      },
+      {
+        q_en: "What should be identified when creating entities in the Models folder?",
+        q_ar: "ماذا يجب تحديده عند إنشاء entities في مجلد Models؟",
+        opts_en: ["Primary key and foreign key","Only primary key","Only foreign key","No keys are needed"],
+        opts_ar: ["المفتاح الأساسي والمفتاح الخارجي","المفتاح الأساسي فقط","المفتاح الخارجي فقط","لا حاجة لمفاتيح"],
+        correct: 0,
+        ex_en: "Both primary key (to uniquely identify records) and foreign key (to maintain relationships between entities) must be properly identified.",
+        ex_ar: "يجب تحديد المفتاح الأساسي (لتحديد السجلات بشكل فريد) والمفتاح الخارجي (للحفاظ على العلاقات بين الكيانات)."
+      }
+    ],
+    written: [
+      {
+        q_en: "What is the role of the DB context class in creating a database?",
+        q_ar: "ما دور كلاس DB Context في إنشاء قاعدة البيانات؟",
+        ans_en: "The DB context class creates a database table for each class (model), allowing management of data and interactions with the database. It acts as a bridge between the application and the database via Entity Framework.",
+        ans_ar: "يُنشئ كلاس DB Context جدول قاعدة بيانات لكل كلاس، مما يتيح إدارة البيانات والتفاعل مع قاعدة البيانات. يعمل كجسر بين التطبيق وقاعدة البيانات."
+      },
+      {
+        q_en: "Explain the difference between Model and @model.",
+        q_ar: "اشرح الفرق بين Model و@model.",
+        ans_en: "Model is a view property that contains dynamic data sent from the backend to the frontend. @model is the Razor syntax used to define the type of the model in a Razor view (.cshtml file).",
+        ans_ar: "Model هو خاصية العرض التي تحتوي البيانات الديناميكية المُرسَلة من الخلفية. @model هو صياغة Razor لتعريف نوع النموذج في ملف العرض."
+      },
+      {
+        q_en: "What are the two approaches to working with databases, and how do they differ?",
+        q_ar: "ما هما أسلوبا العمل مع قواعد البيانات وكيف يختلفان؟",
+        ans_en: "Database First: generate the database in SQL first, then write code to interact with it. Code First: create the model classes first, then migrate them to create the database. Code First is more commonly used in modern ASP.NET Core projects.",
+        ans_ar: "Database First: إنشاء قاعدة البيانات في SQL أولاً ثم كتابة الكود. Code First: إنشاء كلاسات النموذج أولاً ثم ترحيلها لإنشاء قاعدة البيانات."
+      },
+      {
+        q_en: "Compare between strong type view versus loosely typed view.",
+        q_ar: "قارن بين العرض شديد الكتابة (Strong Type) والعرض مرن الكتابة (Loosely Typed).",
+        ans_en: "Strong type view: the type is explicitly defined at the top of the page using @model — provides IntelliSense and compile-time checking. Loosely typed view: dynamic, no fixed type, uses ViewData/ViewBag — less safe, no compile-time checking.",
+        ans_ar: "Strong type view: النوع محدد صراحةً في بداية الصفحة بـ @model — يوفر IntelliSense والتحقق أثناء الترجمة. Loosely typed: ديناميكي بدون نوع محدد، يستخدم ViewData/ViewBag."
+      },
+      {
+        q_en: "What should be ensured when creating entities in the Models folder?",
+        q_ar: "ماذا يجب التأكد منه عند إنشاء entities في مجلد Models؟",
+        ans_en: "When creating entities, it is important to ensure that the primary key and foreign key are properly identified to maintain the relationships between the entities and ensure data integrity.",
+        ans_ar: "يجب التأكد من تحديد المفتاح الأساسي والمفتاح الخارجي بشكل صحيح للحفاظ على العلاقات بين الكيانات وضمان تكامل البيانات."
+      }
+    ]
+  },
+  t4: {
+    mcq: [
+      {
+        q_en: "What is the purpose of the ViewBag?",
+        q_ar: "ما الغرض من ViewBag؟",
+        opts_en: ["To store user sessions","To solve the problem of casting ViewData","To manage database connections","To handle client requests"],
+        opts_ar: ["تخزين جلسات المستخدم","حل مشكلة تحويل نوع ViewData","إدارة اتصالات قاعدة البيانات","معالجة طلبات العميل"],
+        correct: 1,
+        ex_en: "ViewBag is a dynamic property that wraps ViewData — it solves the casting problem by allowing different data types to be sent to the view without explicit casting.",
+        ex_ar: "ViewBag خاصية ديناميكية تغلف ViewData — تحل مشكلة تحويل الأنواع بالسماح بإرسال أنواع بيانات مختلفة للعرض بدون cast صريح."
+      },
+      {
+        q_en: "What are the two ways mentioned to send data to the same view?",
+        q_ar: "ما هما الطريقتان لإرسال بيانات متعددة لنفس العرض؟",
+        opts_en: ["Using Dictionary data collection and Custom Class","Using JSON and XML","Using Forms and APIs","Using ViewBag only"],
+        opts_ar: ["استخدام Dictionary وكلاس مخصص","استخدام JSON وXML","استخدام Forms وAPIs","استخدام ViewBag فقط"],
+        correct: 0,
+        ex_en: "Two approaches: (1) Dictionary data collection — ViewData and ViewBag. (2) Custom Class — create a ViewModel class containing all needed data.",
+        ex_ar: "طريقتان: (1) مجموعة بيانات Dictionary — ViewData وViewBag. (2) كلاس مخصص — ViewModel يحتوي كل البيانات المطلوبة."
+      },
+      {
+        q_en: "What is the role of the ViewImports file?",
+        q_ar: "ما دور ملف ViewImports؟",
+        opts_en: ["To manage database connections","To be seen by all views","To handle user input","To store session data"],
+        opts_ar: ["إدارة اتصالات قاعدة البيانات","ليكون مرئياً لكل العروض","معالجة إدخال المستخدم","تخزين بيانات الجلسة"],
+        correct: 1,
+        ex_en: "ViewImports file allows namespaces, Tag Helpers, and ViewModel declarations to be visible/available across all views in the application automatically.",
+        ex_ar: "ملف ViewImports يجعل namespaces والـ Tag Helpers وإعلانات ViewModel متاحة لجميع العروض في التطبيق تلقائياً."
+      }
+    ],
+    written: [
+      {
+        q_en: "What is the purpose of using ViewBag in ASP.NET Core?",
+        q_ar: "ما الغرض من استخدام ViewBag في ASP.NET Core؟",
+        ans_en: "ViewBag is used to solve the problem of casting ViewData, allowing different types of data to be sent to the view without needing to create a custom class. It is a dynamic object that does not require type casting.",
+        ans_ar: "يُستخدم ViewBag لحل مشكلة casting في ViewData، ويسمح بإرسال أنواع مختلفة من البيانات للعرض بدون الحاجة لإنشاء كلاس مخصص."
+      },
+      {
+        q_en: "What are the two ways to send multiple types of data to the same view?",
+        q_ar: "ما هما الطريقتان لإرسال أنواع متعددة من البيانات لنفس العرض؟",
+        ans_en: "1. Dictionary data collection: ViewData (dictionary-based, requires casting) and ViewBag (dynamic wrapper around ViewData, no casting needed). 2. Custom Class (ViewModel): create a class that contains all the data to be passed to the view.",
+        ans_ar: "1. مجموعة بيانات Dictionary: ViewData (يحتاج casting) وViewBag (ديناميكي لا يحتاج casting). 2. كلاس مخصص (ViewModel): كلاس يحتوي كل البيانات المطلوبة."
+      },
+      {
+        q_en: "What is the scenario for calling /Department/Index?",
+        q_ar: "ما هو سيناريو استدعاء /Department/Index؟",
+        ans_en: "The client sends a request to /Department/Index → the routing map triggers the Index method of the Department controller → the method generates an object → the object is passed to the view → the view renders HTML and destroys the object while waiting for the next request.",
+        ans_ar: "العميل يرسل طلب لـ /Department/Index → خريطة التوجيه تشغّل إجراء Index في متحكم Department → يُنشأ كائن → يُمرَّر للعرض → يُحوَّل لـ HTML ويُحذف الكائن."
+      },
+      {
+        q_en: "What types of data can be sent in the same view?",
+        q_ar: "ما أنواع البيانات التي يمكن إرسالها في نفس العرض؟",
+        ans_en: "In the same view, you can send: Employee Details (custom object), a Message (string), Temperature (numeric), Advertisement (string), any primitive data, and a List of items — all using ViewBag or a custom ViewModel class.",
+        ans_ar: "يمكن إرسال: تفاصيل موظف (كائن مخصص)، رسالة (نص)، درجة حرارة (رقم)، إعلان (نص)، أي بيانات أولية، وقائمة من العناصر — باستخدام ViewBag أو ViewModel."
+      },
+      {
+        q_en: "What is the significance of the ViewImports file in relation to the ViewModel?",
+        q_ar: "ما أهمية ملف ViewImports بالنسبة للـ ViewModel؟",
+        ans_en: "The ViewImports file is significant because it allows the ViewModel (and its namespace) to be seen by all the views in the application, facilitating better data management and access across all views without repeating @using statements.",
+        ans_ar: "يتيح ملف ViewImports للـ ViewModel (ونطاق أسمائه) أن يكون مرئياً لجميع العروض في التطبيق دون الحاجة لتكرار جملة @using في كل ملف."
+      }
+    ]
+  },
+  t5: {
+    mcq: [
+      {
+        q_en: "What are the types of binding mentioned in the course?",
+        q_ar: "ما هي أنواع الربط (Binding) المذكورة في المادة؟",
+        opts_en: ["Primitive Data","Data Collection","Custom class","All of the above"],
+        opts_ar: ["بيانات أولية","مجموعة بيانات","كلاس مخصص","كل ما سبق"],
+        correct: 3,
+        ex_en: "The three types of binding are: Primitive Data (int, string, etc.), Data Collection (lists, arrays), and Custom Class (objects/models).",
+        ex_ar: "أنواع الربط الثلاثة: بيانات أولية (int، string)، مجموعة بيانات (قوائم)، وكلاس مخصص (كائنات/نماذج)."
+      },
+      {
+        q_en: "What does the root values of the query string contain?",
+        q_ar: "ماذا تحتوي القيم الجذرية لـ query string؟",
+        opts_en: ["Class, Method, ID","Class, Function, ID","Method, ID, Value","Class, Method, Value"],
+        opts_ar: ["الكلاس، الإجراء، المعرف","الكلاس، الدالة، المعرف","الإجراء، المعرف، القيمة","الكلاس، الإجراء، القيمة"],
+        correct: 0,
+        ex_en: "The query string root values contain three segments: Class (controller name), Method (action name), and ID (record identifier).",
+        ex_ar: "القيم الجذرية لـ query string تحتوي ثلاثة أجزاء: الكلاس (اسم المتحكم)، الإجراء (اسم الإجراء)، والمعرف."
+      },
+      {
+        q_en: "What is a mix of data that can be sent according to the course?",
+        q_ar: "ما هو المزج الممكن للبيانات التي يمكن إرسالها؟",
+        opts_en: ["Only Primitive Data","Only Custom Class","Primitive and Custom Class","Only Data Collection"],
+        opts_ar: ["بيانات أولية فقط","كلاس مخصص فقط","بيانات أولية وكلاس مخصص","مجموعة بيانات فقط"],
+        correct: 2,
+        ex_en: "You can mix Primitive Data and Custom Class together in the same action — this is a common approach for sending combined data.",
+        ex_ar: "يمكن مزج البيانات الأولية مع الكلاس المخصص معاً في نفس الإجراء — وهو أسلوب شائع لإرسال بيانات مجمعة."
+      },
+      {
+        q_en: "What should not be the same name as one of the properties of the custom class?",
+        q_ar: "ماذا يجب ألا يحمل نفس اسم خصائص الكلاس المخصص؟",
+        opts_en: ["Attribute in the primitive","Method name","Class name","ID"],
+        opts_ar: ["الخاصية في البيانات الأولية","اسم الإجراء","اسم الكلاس","المعرف"],
+        correct: 0,
+        ex_en: "The attribute name in the primitive data must NOT match any property name of the custom class to avoid conflicts during model binding.",
+        ex_ar: "اسم الخاصية في البيانات الأولية يجب ألا يطابق أي اسم خاصية في الكلاس المخصص لتجنب التعارض أثناء model binding."
+      },
+      {
+        q_en: "How many segments do the root values of the query string contain?",
+        q_ar: "كم عدد أجزاء القيم الجذرية لـ query string؟",
+        opts_en: ["One","Two","Three","Four"],
+        opts_ar: ["واحد","اثنان","ثلاثة","أربعة"],
+        correct: 2,
+        ex_en: "Three segments: {controller}/{action}/{id}. This is the default routing template in ASP.NET Core MVC.",
+        ex_ar: "ثلاثة أجزاء: {controller}/{action}/{id}. وهو القالب الافتراضي للتوجيه في ASP.NET Core MVC."
+      }
+    ],
+    written: [
+      {
+        q_en: "What are the three types of binding?",
+        q_ar: "ما هي الأنواع الثلاثة للربط (Binding)؟",
+        ans_en: "The three types of binding are: 1. Primitive Data (int, string, bool, etc.) 2. Data Collection (List, Array, IEnumerable) 3. Custom Class (a model or ViewModel object).",
+        ans_ar: "الأنواع الثلاثة: 1. البيانات الأولية (int، string، bool). 2. مجموعة البيانات (List، Array). 3. الكلاس المخصص (نموذج أو ViewModel)."
+      },
+      {
+        q_en: "What is the significance of the attribute names in primitive data when using custom classes?",
+        q_ar: "ما أهمية أسماء الخصائص في البيانات الأولية عند استخدام الكلاس المخصص؟",
+        ans_en: "The attribute name in the primitive data must NOT have the same name as any property in the custom class. If names match, model binding will fail or produce unexpected results/conflicts.",
+        ans_ar: "اسم الخاصية في البيانات الأولية يجب ألا يطابق أي اسم خاصية في الكلاس المخصص. إذا تطابقت الأسماء، سيفشل model binding أو يُنتج نتائج غير متوقعة."
+      },
+      {
+        q_en: "What are the three segments in the root values of the query string?",
+        q_ar: "ما هي الأجزاء الثلاثة في القيم الجذرية لـ query string؟",
+        ans_en: "The three segments are: Class (the Controller name), Method (the Action method name), and ID (the record identifier/parameter). Format: /{controller}/{action}/{id}",
+        ans_ar: "الأجزاء الثلاثة: الكلاس (اسم المتحكم)، الإجراء (اسم إجراء Action)، والمعرف (معرف السجل). الصيغة: /{controller}/{action}/{id}"
+      },
+      {
+        q_en: "What is Model Binding?",
+        q_ar: "ما هو Model Binding؟",
+        ans_en: "Model Binding is the process of sending data from the frontend to the backend. Examples: login data, registration data, update, insert, and delete operations. ASP.NET Core automatically maps form/query string values to action method parameters.",
+        ans_ar: "Model Binding هو عملية إرسال البيانات من الواجهة الأمامية للخلفية. أمثلة: بيانات تسجيل الدخول، بيانات التسجيل، التحديث، الإدراج، والحذف."
+      },
+      {
+        q_en: "What are the two main types of forms?",
+        q_ar: "ما هما النوعان الرئيسيان للنماذج (Forms)؟",
+        ans_en: "1. GET form (Query String): data is sent in the URL as query parameters — visible in the address bar, suitable for search/filter operations. 2. POST form (Form Data): data is sent in the request body — not visible in URL, suitable for sensitive data (login, registration).",
+        ans_ar: "1. GET (Query String): البيانات تُرسَل في URL — مرئية، مناسبة للبحث والتصفية. 2. POST (Form Data): البيانات تُرسَل في جسم الطلب — غير مرئية في URL، مناسبة للبيانات الحساسة."
+      }
+    ]
+  },
+  t6: {
+    written: [
+      {
+        q_en: "What are the two types of main requests for interacting with the database?",
+        q_ar: "ما هما النوعان الرئيسيان للطلبات للتفاعل مع قاعدة البيانات؟",
+        ans_en: "1. GET: used to retrieve/read data from the database (read-only, no side effects). 2. POST: used to send/write data to the database (create, update, delete operations).",
+        ans_ar: "1. GET: يُستخدم لاسترجاع البيانات من قاعدة البيانات. 2. POST: يُستخدم لإرسال/كتابة البيانات في قاعدة البيانات (إنشاء، تعديل، حذف)."
+      },
+      {
+        q_en: "What is the purpose of creating the Edit view?",
+        q_ar: "ما الغرض من إنشاء عرض Edit؟",
+        ans_en: "The purpose of creating the Edit view is to allow users to modify existing data within the application, providing a user-friendly interface for editing records and submitting updated data back to the database.",
+        ans_ar: "الغرض من عرض Edit هو السماح للمستخدمين بتعديل البيانات الموجودة في التطبيق، وتوفير واجهة سهلة الاستخدام لتحرير السجلات وإرسال البيانات المحدثة لقاعدة البيانات."
+      },
+      {
+        q_en: "What is the significance of the Index view in MVC?",
+        q_ar: "ما أهمية عرض Index في MVC؟",
+        ans_en: "The Index view typically serves as the main entry point for users to view a list of records or data entries. It allows for easy navigation and access to the application's features (such as edit/delete/details links for each record).",
+        ans_ar: "عرض Index يعمل كنقطة الدخول الرئيسية للمستخدمين لعرض قائمة السجلات. يتيح التنقل السهل والوصول لمميزات التطبيق (تعديل، حذف، تفاصيل)."
+      },
+      {
+        q_en: "What are the steps for creating an Edit view for an employee table?",
+        q_ar: "ما هي خطوات إنشاء عرض Edit لجدول الموظفين؟",
+        ans_en: "1. Set Up the Model: define Employee class in Models folder with properties (Id, Name…), configure DbContext with DbSet<Employee>. 2. Implement Controller Actions: HttpGet Edit (retrieve record by id, pass to view) and HttpPost Edit (receive updated object, validate, save to DB, redirect to Index). 3. Create the Edit View: add Edit.cshtml in Views/Employee, bind to model using @model. 4. Connect List to Edit: add Edit link/button in Index.cshtml for each row.",
+        ans_ar: "1. إعداد النموذج: تعريف كلاس Employee في Models مع DbContext. 2. إجراءات المتحكم: HttpGet Edit (جلب السجل) وHttpPost Edit (حفظ التعديلات). 3. إنشاء العرض: Edit.cshtml مع @model. 4. ربط القائمة بالتعديل: إضافة رابط Edit في Index.cshtml."
+      }
+    ]
+  },
+  t7: {
+    complete: [
+      {
+        q_en: "Loosely type helper contains different input tags except __________.",
+        q_ar: "المساعد المرن (Loosely type helper) يحتوي وسوم input مختلفة إلا __________.",
+        ans_en: "Buttons",
+        ans_ar: "الأزرار (Buttons)"
+      },
+      {
+        q_en: "The strong type helper must be inside __________ view.",
+        q_ar: "يجب أن يكون المساعد شديد الكتابة (Strong type helper) داخل عرض __________.",
+        ans_en: "Strong Type",
+        ans_ar: "Strong Type (شديد الكتابة)"
+      },
+      {
+        q_en: "In the strong type helper, if the TModel for a certain tag contains a class attribute, it has to be written __________ so it doesn't throw an error.",
+        q_ar: "في المساعد شديد الكتابة، إذا احتوى TModel لوسم معين على خاصية class، يجب كتابتها كـ __________ لتجنب الخطأ.",
+        ans_en: "@class",
+        ans_ar: "@class"
+      },
+      {
+        q_en: "All server-side attributes start with __________.",
+        q_ar: "جميع خصائص جانب الخادم تبدأ بـ __________.",
+        ans_en: "asp-",
+        ans_ar: "asp-"
+      }
+    ],
+    written: [
+      {
+        q_en: "What are the three types of tags used in the POST form to send data from frontend to backend?",
+        q_ar: "ما هي الأنواع الثلاثة للوسوم المستخدمة في نموذج POST لإرسال البيانات من الواجهة للخلفية؟",
+        ans_en: "1. Pure HTML input tag (standard HTML, no server-side integration). 2. Pure C# HTML Helper (e.g., Html.TextBoxFor() — C# method that renders HTML). 3. Strong Type Helper (Tag Helper with asp- attributes bound to a model property).",
+        ans_ar: "1. وسم HTML input نقي (HTML عادي). 2. C# HTML Helper نقي (مثل Html.TextBoxFor() — دالة C# تُنتج HTML). 3. Strong Type Helper (Tag Helper بخصائص asp- مرتبطة بخاصية النموذج)."
+      },
+      {
+        q_en: "What is TModel?",
+        q_ar: "ما هو TModel؟",
+        ans_en: "TModel is an anonymous object that contains HTML attributes, where each attribute has its name and value. It is used with the Strong Type Helper to pass additional HTML attributes (like class, id, style) to the rendered HTML element without conflicting with model binding.",
+        ans_ar: "TModel هو كائن مجهول يحتوي خصائص HTML، حيث لكل خاصية اسم وقيمة. يُستخدم مع Strong Type Helper لتمرير خصائص HTML إضافية (class، id، style) للعنصر المُنتَج."
+      }
+    ]
+  },
+  t8: {
+    written: [
+      {
+        q_en: "What are the two types of the input ImageURL in the view?",
+        q_ar: "ما هما نوعا الإدخال ImageURL في العرض؟",
+        ans_en: "There are two ways to handle ImageURL: 1. As a String: the user enters a URL path as text — simple but requires a valid URL. 2. As a File data type: the user uploads an actual image file — more complex but allows direct file upload.",
+        ans_ar: "طريقتان للتعامل مع ImageURL: 1. كـ String: المستخدم يُدخل مسار URL كنص. 2. كـ File (ملف): المستخدم يرفع ملف صورة فعلي."
+      },
+      {
+        q_en: "How to validate the data before saving it in the database? Give an example.",
+        q_ar: "كيف يتم التحقق من البيانات قبل حفظها في قاعدة البيانات؟ أعطِ مثالاً.",
+        ans_en: "Validating the data through an if condition inside the action method responsible for saving. Example: check if input data is null or not, and if the salary is bigger than the minimum allowed salary amount. If validation fails, return the view with an error message instead of saving.",
+        ans_ar: "التحقق عبر شرط if داخل إجراء الحفظ. مثال: التحقق من أن البيانات ليست null، وأن الراتب أكبر من الحد الأدنى. إذا فشل التحقق، يُعاد العرض مع رسالة خطأ."
+      },
+      {
+        q_en: "What are the inputs of the RedirectToAction method used after saving data?",
+        q_ar: "ما هي مدخلات إجراء RedirectToAction المستخدم بعد حفظ البيانات؟",
+        ans_en: "RedirectToAction takes three parameters: 1. Action name — the action to redirect to (e.g., 'Index'). 2. Controller name — the controller containing that action (e.g., 'Employee'). 3. Route values — optional additional URL parameters (e.g., new { id = employee.Id }).",
+        ans_ar: "RedirectToAction يأخذ ثلاثة مدخلات: 1. اسم الإجراء (مثل 'Index'). 2. اسم المتحكم (مثل 'Employee'). 3. قيم التوجيه — معاملات URL إضافية اختيارية."
+      },
+      {
+        q_en: "What is the best way to create a dropdown list (e.g., departments list)?",
+        q_ar: "ما هي أفضل طريقة لإنشاء قائمة منسدلة (مثل قائمة الأقسام)؟",
+        ans_en: "The best way is using the <select> tag with the asp-items helper. In the controller, create: SelectList deptOptions = new SelectList(ViewBag.DeptList, 'Id', 'Name'); Then in the view, use: <select asp-for='DepartmentID' asp-items='deptOptions'><option value='0'>--Select--</option></select>",
+        ans_ar: "الطريقة المثلى هي استخدام وسم <select> مع مساعد asp-items. في المتحكم: إنشاء SelectList من البيانات. في العرض: <select asp-for='DepartmentID' asp-items='deptOptions'> مع خيار افتراضي."
+      }
+    ]
+  }
+};
+
+// ============================================================
+// SCORE STATE
+// ============================================================
+Object.keys(data).forEach(sec => {
+  if (data[sec].mcq) {
+    scores[sec] = 0;
+    totals[sec] = data[sec].mcq.length;
+  }
+});
+let globalScore = 0;
+let globalTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+document.getElementById('global-total').textContent = globalTotal;
+
+// ============================================================
+// RENDER MCQ
+// ============================================================
+function renderMCQ(sec) {
+  const container = document.getElementById(`${sec}-mcq`);
+  if (!container || container.dataset.rendered) return;
+  container.dataset.rendered = '1';
+  const qs = data[sec].mcq;
+  qs.forEach((q, i) => {
+    const showAr = currentLang === 'ar' || currentLang === 'both';
+    const showEn = currentLang === 'en' || currentLang === 'both';
+    const letters = ['A','B','C','D'];
+    let opts = '';
+    q.opts_en.forEach((opt,j) => {
+      opts += `<div class="q-opt" id="opt-${sec}-${i}-${j}" onclick="answer(this,'${sec}',${i},${j},${q.correct})">
+        <span class="opt-letter">${letters[j]}</span>
+        <span class="opt-text">
+          ${showAr && q.opts_ar[j] ? `<span class="ot-ar" dir="rtl" style="display:block">${q.opts_ar[j]}</span>` : ''}
+          ${showEn ? `<span class="ot-en" dir="ltr" style="display:block;font-size:13px">${opt}</span>` : ''}
+        </span>
+      </div>`;
+    });
+    container.innerHTML += `
+      <div class="q-card" id="qcard-${sec}-${i}">
+        <div class="q-header">
+          <div class="q-num">${i+1}</div>
+          <div class="q-text">
+            ${showAr && q.q_ar ? `<div class="qt-ar">${q.q_ar}</div>` : ''}
+            ${showEn ? `<div class="qt-en">${q.q_en}</div>` : ''}
+          </div>
+        </div>
+        <div class="q-options" id="opts-${sec}-${i}">${opts}</div>
+        <div class="q-explanation" id="exp-${sec}-${i}">
+          <div class="exp-result-label" id="exp-label-${sec}-${i}"></div>
+          <div class="exp-text">
+            <div class="exp-text-ar" id="exp-ar-${sec}-${i}"></div>
+            <div class="exp-text-en" id="exp-en-${sec}-${i}"></div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+// ============================================================
+// RENDER WRITTEN
+// ============================================================
+function renderWritten(sec) {
+  const container = document.getElementById(`${sec}-written`);
+  if (!container || container.dataset.rendered) return;
+  container.dataset.rendered = '1';
+  const qs = data[sec].written;
+  const showAr = currentLang === 'ar' || currentLang === 'both';
+  const showEn = currentLang === 'en' || currentLang === 'both';
+  qs.forEach((q, i) => {
+    const revBtn = showAr ? 'إظهار الإجابة' : 'Show model answer';
+    container.innerHTML += `
+      <div class="written-card">
+        <div class="written-header">
+          <div class="q-num">${i+1}</div>
+          <div class="q-text">
+            ${showAr && q.q_ar ? `<div class="qt-ar">${q.q_ar}</div>` : ''}
+            ${showEn ? `<div class="qt-en">${q.q_en}</div>` : ''}
+          </div>
+        </div>
+        <div class="written-body">
+          <button class="reveal-btn" onclick="revealAnswer(this)">${revBtn}</button>
+          <div class="written-reveal">
+            <div class="answer-label">Model Answer</div>
+            ${showAr && q.ans_ar ? `<div class="answer-content answer-content-ar">${q.ans_ar}</div>` : ''}
+            ${showEn && q.ans_en ? `<div class="answer-content answer-content-en">${q.ans_en}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+// ============================================================
+// RENDER COMPLETE (T7)
+// ============================================================
+function renderComplete(sec) {
+  const container = document.getElementById(`${sec}-complete`);
+  if (!container || container.dataset.rendered) return;
+  container.dataset.rendered = '1';
+  const qs = data[sec].complete;
+  const showAr = currentLang === 'ar' || currentLang === 'both';
+  const showEn = currentLang === 'en' || currentLang === 'both';
+  qs.forEach((q, i) => {
+    container.innerHTML += `
+      <div class="written-card">
+        <div class="written-header">
+          <div class="q-num">${i+1}</div>
+          <div class="q-text">
+            ${showAr && q.q_ar ? `<div class="qt-ar">${q.q_ar}</div>` : ''}
+            ${showEn ? `<div class="qt-en">${q.q_en}</div>` : ''}
+          </div>
+        </div>
+        <div class="written-body">
+          <button class="reveal-btn" onclick="revealAnswer(this)">Show Answer</button>
+          <div class="written-reveal">
+            <div class="answer-label">Answer</div>
+            ${showAr && q.ans_ar ? `<div class="answer-content answer-content-ar">${q.ans_ar}</div>` : ''}
+            ${showEn ? `<div class="answer-content answer-content-en" style="font-weight:700;font-size:16px">${q.ans_en}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+// ============================================================
+// RENDER T6 / T8 (written-only pages)
+// ============================================================
+function renderWrittenOnly(sec) {
+  const container = document.getElementById(`${sec}-written`);
+  if (!container || container.dataset.rendered) return;
+  container.dataset.rendered = '1';
+  const qs = data[sec].written;
+  const showAr = currentLang === 'ar' || currentLang === 'both';
+  const showEn = currentLang === 'en' || currentLang === 'both';
+  qs.forEach((q, i) => {
+    container.innerHTML += `
+      <div class="written-card" style="margin-bottom:20px">
+        <div class="written-header">
+          <div class="q-num">${i+1}</div>
+          <div class="q-text">
+            ${showAr && q.q_ar ? `<div class="qt-ar">${q.q_ar}</div>` : ''}
+            ${showEn ? `<div class="qt-en">${q.q_en}</div>` : ''}
+          </div>
+        </div>
+        <div class="written-body">
+          <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+          <div class="written-reveal">
+            <div class="answer-label">Model Answer</div>
+            ${showAr && q.ans_ar ? `<div class="answer-content answer-content-ar">${q.ans_ar}</div>` : ''}
+            ${showEn && q.ans_en ? `<div class="answer-content answer-content-en">${q.ans_en}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+// ============================================================
+// ANSWER HANDLER
+// ============================================================
+function answer(el, sec, qIdx, chosen, correct) {
+  const card = document.getElementById(`qcard-${sec}-${qIdx}`);
+  if (card.classList.contains('done')) return;
+  card.classList.add('done');
+
+  const opts = card.querySelectorAll('.q-opt');
+  opts.forEach(o => o.classList.add('answered'));
+
+  const isCorrect = chosen === correct;
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) opts[correct].classList.add('show-correct');
+
+  // Show explanation card
+  const q = data[sec].mcq[qIdx];
+  const expBox   = document.getElementById(`exp-${sec}-${qIdx}`);
+  const expLabel = document.getElementById(`exp-label-${sec}-${qIdx}`);
+  const expAr    = document.getElementById(`exp-ar-${sec}-${qIdx}`);
+  const expEn    = document.getElementById(`exp-en-${sec}-${qIdx}`);
+
+  expBox.classList.add('show', isCorrect ? 'exp-correct' : 'exp-wrong');
+  expLabel.textContent = isCorrect ? '✅ Correct!' : '❌ Incorrect';
+  expAr.textContent = q.ex_ar || '';
+  expEn.textContent = q.ex_en || '';
+  expAr.style.display = (currentLang === 'en') ? 'none' : 'block';
+  expEn.style.display = (currentLang === 'ar') ? 'none' : 'block';
+
+  // Update section score
+  if (isCorrect) {
+    scores[sec] = (scores[sec] || 0) + 1;
+    globalScore++;
+    document.getElementById('global-score').textContent = globalScore;
+  }
+  const total = totals[sec];
+  const sc = scores[sec] || 0;
+  const fill = document.getElementById(`fill-${sec}`);
+  const val  = document.getElementById(`val-${sec}`);
+  if (fill) fill.style.width = (sc/total*100) + '%';
+  if (val)  val.textContent  = `${sc} / ${total}`;
+}
+
+// ============================================================
+// REVEAL ANSWER
+// ============================================================
+function revealAnswer(btn) {
+  const rev = btn.nextElementSibling;
+  const isOpen = rev.classList.toggle('show');
+  const openLabel = currentLang === 'ar' ? 'إخفاء الإجابة' : 'Hide answer';
+  const closeLabel = currentLang === 'ar' ? 'إظهار الإجابة' : 'Show model answer';
+  btn.textContent = isOpen ? openLabel : closeLabel;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(id, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  else {
+    // Find nav item by onclick content
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(`'${id}'`)) n.classList.add('active');
+    });
+  }
+  window.scrollTo(0, 0);
+  if (window.innerWidth <= 768) closeSidebar();
+
+  // Lazy render
+  if (id === 't1') { renderMCQ('t1'); renderWritten('t1'); }
+  if (id === 't2') { renderMCQ('t2'); renderWritten('t2'); }
+  if (id === 't3') { renderMCQ('t3'); renderWritten('t3'); }
+  if (id === 't4') { renderMCQ('t4'); renderWritten('t4'); }
+  if (id === 't5') { renderMCQ('t5'); renderWritten('t5'); }
+  if (id === 't6') { renderWrittenOnly('t6'); }
+  if (id === 't7') { renderComplete('t7'); renderWritten('t7'); }
+  if (id === 't8') { renderWrittenOnly('t8'); }
+}
+
+// ============================================================
+// TAB SWITCH
+// ============================================================
+function switchTab(el, sec, type) {
+  el.closest('.type-tabs').querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const mcq  = document.getElementById(`${sec}-mcq`);
+  const wr   = document.getElementById(`${sec}-written`);
+  const comp = document.getElementById(`${sec}-complete`);
+  if (mcq)  mcq.classList.toggle('hidden', type !== 'mcq');
+  if (wr)   wr.classList.toggle('hidden', type !== 'written');
+  if (comp) comp.classList.toggle('hidden', type !== 'complete');
+}
+
+// ============================================================
+// LANGUAGE TOGGLE
+// ============================================================
+function setLang(lang, e) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  if (e) e.target.classList.add('active');
+  document.documentElement.dir = (lang === 'en') ? 'ltr' : 'rtl';
+}
+
+// ============================================================
+// SIDEBAR TOGGLE (mobile)
+// ============================================================
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const btn     = document.getElementById('hamburger-btn');
+  const isOpen  = sidebar.classList.toggle('open');
+  overlay.classList.toggle('show', isOpen);
+  btn.classList.toggle('open', isOpen);
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+  document.getElementById('hamburger-btn').classList.remove('open');
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetSection(sec) {
+  const prev = scores[sec] || 0;
+  scores[sec] = 0;
+  globalScore = Math.max(0, globalScore - prev);
+  document.getElementById('global-score').textContent = globalScore;
+  const fill = document.getElementById(`fill-${sec}`);
+  const val  = document.getElementById(`val-${sec}`);
+  if (fill) fill.style.width = '0%';
+  if (val)  val.textContent  = `0 / ${totals[sec]}`;
+  // Re-render
+  const mcqEl = document.getElementById(`${sec}-mcq`);
+  if (mcqEl) { mcqEl.innerHTML = ''; delete mcqEl.dataset.rendered; renderMCQ(sec); }
+}
+</script>
+
+<!-- Developer: J0HNTHAN — https://github.com/J0HNTHAN -->
+</body>
+</html>
